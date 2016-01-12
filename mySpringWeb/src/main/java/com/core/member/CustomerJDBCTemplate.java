@@ -25,9 +25,10 @@ public class CustomerJDBCTemplate implements CustomerDAO{
 		String zip_code = customer.getZip_code();
 		String city = customer.getCity(); 
 		String country = customer.getCountry();
-		String SQL = "insert into customer(CUSTOMER_ID,NAME,ADDRESS1,ADDRESS2,ZIP_CODE,CITY,COUNTRY)  values (?,?, ?, ?, ?, ?, ?)";
+		String SQL = "insert into customer(CUSTOMER_ID,NAME,ADDRESS1,ADDRESS2,ZIP_CODE,CITY,COUNTRY)  values (?,?, ?, ?, ?, ?, ?)"
+				+ "ON DUPLICATE KEY UPDATE CUSTOMER_ID=?,NAME=?,ADDRESS1=?,ADDRESS2=?,ZIP_CODE=?,CITY=?,COUNTRY=?";
 	      
-		 jdbcTemplate.update( SQL, customer_id, name, address1,address2,zip_code,city,country);
+		 jdbcTemplate.update( SQL, customer_id, name, address1,address2,zip_code,city,country,customer_id, name, address1,address2,zip_code,city,country);
 		 
 	      System.out.println("Created Record Name = " + name + " Address1 = " + address1);
 	      return  getCustomer(customer_id);

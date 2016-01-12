@@ -5,10 +5,14 @@
 	<title>Home</title>
 </head>
 <body>
-<h1>
-	Hello world!  
-</h1>
-
-<P>  The time on the server is ${serverTime}. </P>
+<h1>Main page</h1>
+<table>
+<tr>
+<td><a  href="http://localhost:8080/mySpringWeb/Register?id=0">Create New User</a></td>
+</tr>
+<tr>
+<td><a  href="http://localhost:8080/mySpringWeb/listUsers">List Users</a></td>
+</tr>
+</table>
 </body>
 </html>

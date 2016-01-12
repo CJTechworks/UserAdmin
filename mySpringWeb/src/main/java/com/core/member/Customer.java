@@ -8,6 +8,7 @@ public class Customer {
 	private String address2;
 	private String zip_code;
 	private String city;
+	private String country;
 	
 	public Customer(){
 		
@@ -24,7 +25,7 @@ public class Customer {
 		this.city = city;
 		this.country = country;
 	}
-	private String country;
+	
 	public int getCustomer_id() {
 		return customer_id;
 	}

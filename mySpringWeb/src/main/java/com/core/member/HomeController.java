@@ -4,8 +4,10 @@ package com.core.member;
 import java.net.URI;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +18,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriTemplate;
 
 /**
@@ -90,7 +96,69 @@ public class HomeController {
 		customer.update(updatedCustomer);
 	}
 	
+	@RequestMapping("/Register")
+	 public String register(Map<String, Object> model,@RequestParam("id") int id) {
+		Customer userForm = null;
+		if(id!=0){
+			userForm=	customer.getCustomer(id);
+		}
+		else{
+			 userForm = new Customer();	
+		}
+		    
+		
+		model.put("userForm", userForm);
+	    
+
+	         return "Register";
 	
+	     }
+	@RequestMapping("/home")
+	 public String home() {
+		
+
+
+	         return "home";
 	
+	     }
+	
+	  @RequestMapping("/listUsers")
+
+	     public ModelAndView listUsers() {
+	
+	    RestTemplate restTemplate = new RestTemplate();
+	
+	   String url="http://localhost:8080/mySpringWeb/accounts";    
+	   List<LinkedHashMap> users=restTemplate.getForObject(url, List.class);
+
+	         return new ModelAndView("listUsers", "users", users);
+	
+	     }
+
+	  @RequestMapping(value="/create"  ,method = RequestMethod.POST)
+	    public ModelAndView processRegistration(@ModelAttribute("userForm") Customer user,
+	            Map<String, Object> model) {
+		  RestTemplate restTemplate = new RestTemplate();
+			
+			String url = "http://localhost:8080/mySpringWeb/accounts" ;
+
+			URI newAccountLocation = restTemplate.postForLocation(url, user);
+			Customer customerNew = restTemplate.getForObject(newAccountLocation,Customer.class);
+	         
+			String url1="http://localhost:8080/mySpringWeb/accounts";    
+			   List<LinkedHashMap> users=restTemplate.getForObject(url1, List.class);
+
+			         return new ModelAndView("listUsers", "users", users);
+	    }
+	  
+	  @RequestMapping("/Delete")
+		 public ModelAndView delete(Map<String, Object> model,@RequestParam("id") int id) {
+		  RestTemplate restTemplate = new RestTemplate();
+			removeCustomer(id);
+			String url1="http://localhost:8080/mySpringWeb/accounts";    
+			   List<LinkedHashMap> users=restTemplate.getForObject(url1, List.class);
+
+			         return new ModelAndView("listUsers", "users", users);
+		     }
 	
 }
